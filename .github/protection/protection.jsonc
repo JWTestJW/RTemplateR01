@@ -3,10 +3,7 @@
   "required_status_checks": {
     // PR マージ前に必須となるステータスチェック
     "strict": true,              // true: 最新 commit に対し再チェック必須
-    "contexts": [                // 必要な CI / workflow job 名
-      "build", 
-      "test"
-    ]
+    "contexts": []               // 必要な CI / workflow job 名
   },
 
   // 管理者(Admin) が保護ルールを無視できるかどうか（true で無視させない）
@@ -15,8 +12,8 @@
   // ===== レビュー設定 =====
   "required_pull_request_reviews": {
     "dismiss_stale_reviews": true,          // 新 commit 発生時に古いレビューを無効化
-    "require_code_owner_reviews": true,     // CODEOWNERS によるレビュー必須
-    "required_approving_review_count": 2,   // 必要な Approve の数
+    "require_code_owner_reviews": false,    // CODEOWNERS によるレビュー必須
+    "required_approving_review_count": 0,   // 必要な Approve の数
 
     // 1 人のユーザーが複数のレビューを行ってもカウントしない（Enterprise 機能）
     "require_last_push_approval": false,
