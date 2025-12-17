@@ -13,7 +13,7 @@
 #  - dev ブランチ名は env で指定し再利用可能
 # ================================================
 
-name: Sync branch with main
+name: Auto Sync Branch with Main
 
 on:
   pull_request:
