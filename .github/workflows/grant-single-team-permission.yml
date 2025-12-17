@@ -1,0 +1,72 @@
+name: Grant Single Team Permission (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      team_slug:
+        description: "付与したいTeamのSlug"
+        required: true
+      permission:
+        description: "権限 (pull/push/triage/maintain/admin)"
+        required: false          # ★ 必須ではなくする
+        default: "maintain"      # ★ デフォルト値を設定
+
+jobs:
+  grant:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: チェックアウト
+        uses: actions/checkout@v4
+
+      - name: 必要ツールのインストール
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Team存在チェック（存在しない場合は終了）
+        run: |
+          TEAM="${{ github.event.inputs.team_slug }}"
+          ORG="${{ github.repository_owner }}"
+
+          echo "チェック中: Team '$TEAM' が ORG '$ORG' に存在するか確認します..."
+
+          gh api /orgs/$ORG/teams --jq '.[].slug' > team_list.txt
+
+          if ! grep -qx "$TEAM" team_list.txt; then
+            echo "エラー: Team '$TEAM' は存在しません。"
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+
+      - name: 権限チェック（誤りなら終了）
+        run: |
+          PERM="${{ github.event.inputs.permission }}"
+          VALID=("pull" "push" "triage" "maintain" "admin")
+
+          echo "権限チェック: $PERM"
+
+          if [[ ! " ${VALID[*]} " =~ " ${PERM} " ]]; then
+            echo "エラー: 権限 '$PERM' は無効です。"
+            echo "使用可能: pull / push / triage / maintain / admin"
+            exit 1
+          fi
+
+      - name: 権限付与
+        run: |
+          TEAM="${{ github.event.inputs.team_slug }}"
+          PERM="${{ github.event.inputs.permission }}"
+          ORG="${{ github.repository_owner }}"
+          REPO="${{ github.event.repository.name }}"
+
+          echo "Team '$TEAM' に '$PERM' 権限を付与します → $ORG/$REPO"
+
+          gh api \
+            -X PUT \
+            "/orgs/$ORG/teams/$TEAM/repos/$ORG/$REPO" \
+            -f permission="$PERM"
+
+          echo "完了: $TEAM に '$PERM' を付与しました。"
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
