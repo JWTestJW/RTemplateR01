@@ -29,7 +29,7 @@ on:
         default: "false"
 
 env:
-  TARGET_BRANCH: &target_branch "dev"   # 対象ブランチ名
+  TARGET_BRANCH: "dev"   # 対象ブランチ名
 
 jobs:
   sync-branches:
@@ -38,7 +38,9 @@ jobs:
       (
         github.event.pull_request.merged == true &&
         github.event.pull_request.base.ref == 'main' &&
-        github.event.pull_request.head.ref == *target_branch
+        github.event.pull_request.head.ref == 'dev'  # 対象ブランチ名 
+        # GitHub Actions の if: はジョブやステップの コンパイル時（ワークフロー読み取り時） に評価されるため、
+        # env: に定義した変数はまだ存在せず、env.TARGET_BRANCH が未定義として扱われます。
       )
     runs-on: ubuntu-latest
 
