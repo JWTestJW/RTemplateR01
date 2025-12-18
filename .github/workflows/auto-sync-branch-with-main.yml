@@ -108,7 +108,7 @@ jobs:
            github.event.inputs.continue_on_file_diff == 'true')
         run: |
           git checkout ${{ env.TARGET_BRANCH }}
-          git merge origin/main --no-ff -m "Sync main into dev (auto)"
+          git merge origin/main --no-ff --allow-unrelated-histories -m "Sync main into dev (auto)"
 
       - name: Push updated target branch
         if: |
