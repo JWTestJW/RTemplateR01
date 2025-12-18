@@ -38,7 +38,7 @@ jobs:
       (
         github.event.pull_request.merged == true &&
         github.event.pull_request.base.ref == 'main' &&
-        github.event.pull_request.head.ref == ${{ env.TARGET_BRANCH }}
+        github.event.pull_request.head.ref == env.TARGET_BRANCH
       )
     runs-on: ubuntu-latest
 
