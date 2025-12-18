@@ -33,14 +33,14 @@ env:
 
 jobs:
   sync-branches:
+    # 対象ブランチ名は 'dev' 固定
+    # env.TARGET_BRANCH は job.if からは使えない
     if: |
       github.event_name == 'workflow_dispatch' ||
       (
         github.event.pull_request.merged == true &&
         github.event.pull_request.base.ref == 'main' &&
-        github.event.pull_request.head.ref == 'dev'  # 対象ブランチ名 
-        # GitHub Actions の if: はジョブやステップの コンパイル時（ワークフロー読み取り時） に評価されるため、
-        # env: に定義した変数はまだ存在せず、env.TARGET_BRANCH が未定義として扱われます。
+        github.event.pull_request.head.ref == 'dev'
       )
     runs-on: ubuntu-latest
 
