@@ -29,7 +29,7 @@ on:
         default: "false"
 
 env:
-  TARGET_BRANCH: "dev"   # 対象ブランチ名
+  TARGET_BRANCH: &target_branch "dev"   # 対象ブランチ名
 
 jobs:
   sync-branches:
@@ -38,7 +38,7 @@ jobs:
       (
         github.event.pull_request.merged == true &&
         github.event.pull_request.base.ref == 'main' &&
-        github.event.pull_request.head.ref == env.TARGET_BRANCH
+        github.event.pull_request.head.ref == *target_branch
       )
     runs-on: ubuntu-latest
 
