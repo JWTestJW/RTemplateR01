@@ -1,5 +1,5 @@
 # ================================================
-#  機能概要 
+#  機能概要
 # -----------------------------------------------
 #  このワークフローは、dev（env で指定）から main への PR が
 #  正常にマージされた後、自動で dev を main に同期させます。
@@ -13,7 +13,7 @@
 #  - dev ブランチ名は env で指定し再利用可能
 # ================================================
 
-name: Auto Sync Branch with Main
+name: Auto Sync Branch with Main (or Manual)
 
 on:
   pull_request:
@@ -34,7 +34,7 @@ permissions:
   actions: write
 
 env:
-  TARGET_BRANCH: "dev"   # 対象ブランチ名
+  TARGET_BRANCH: "dev" # 対象ブランチ名
 
 jobs:
   sync-branches:
@@ -47,8 +47,7 @@ jobs:
         github.event.pull_request.base.ref == 'main' &&
         github.event.pull_request.head.ref == 'dev'
       )
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-latest # GitHub が用意する Linux 実行環境
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

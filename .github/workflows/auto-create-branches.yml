@@ -1,13 +1,19 @@
-# ============================================
-#  dev / qa ブランチを作成するワークフロー
-# （テンプレートから作成された新規リポジトリで使用）
-# （github-actions[bot] に Push 権限付与済み）
-# ============================================
+# ================================================
+#  機能概要
+# -----------------------------------------------
+#  このワークフローは、リポジトリ作成後の初回プッシュ時に
+#  main ブランチから dev および qa ブランチを自動作成します。
+#
+#  主な機能：
+#  - dev, qa ブランチの作成
+#  - 既存の同名ブランチがある場合は再作成（強制上書き）
+#  - テンプレートリポジトリ（名前に 'template' を含む）では実行しない
+# ================================================
 
-name: Auto Create Branches   # ワークフロー名
+name: Auto Create Branches (or Manual)
 
 permissions:
-  contents: write            # ブランチ作成・push に必須
+  contents: write # ブランチ作成・push に必須
 
 on:
   workflow_dispatch: {}
@@ -16,9 +22,13 @@ on:
 
 jobs:
   create-branches:
-    runs-on: ubuntu-latest   # GitHub が用意する Linux 実行環境
-    # 初回実行時（リポジトリ作成直後）または手動実行時のみ動作
-    if: github.run_number == 1 || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest # GitHub が用意する Linux 実行環境
+
+    # リポジトリ名に 'template' が含まれず、（テンプレート除外）
+    # かつ初回実行時（または手動実行時）のみ動作
+    if: |
+      !contains(github.event.repository.name, 'template') &&
+      (github.run_number == 1 || github.event_name == 'workflow_dispatch')
 
     steps:
       - name: Checkout repository

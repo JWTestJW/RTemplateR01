@@ -1,3 +1,14 @@
+# ================================================
+#  機能概要
+# -----------------------------------------------
+#  このワークフローは、.githooks ディレクトリ内のスクリプトに
+#  実行権限（chmod +x）を付与し、変更があればコミットします。
+#
+#  主な機能：
+#  - .githooks/* への実行権限付与
+#  - 変更がある場合のみ自動コミット＆プッシュ
+# ================================================
+
 name: Fix Executable Permissions
 
 on:
@@ -5,7 +16,7 @@ on:
 
 jobs:
   fix-permissions:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # GitHub が用意する Linux 実行環境
 
     steps:
       - name: Checkout

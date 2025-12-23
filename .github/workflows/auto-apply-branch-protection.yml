@@ -1,9 +1,17 @@
-# ============================================
-# main ブランチに保護ルールを適用するワークフロー
-# （リポジトリ作成後の初回プッシュ時のみ実行）
-# ============================================
+# ================================================
+#  機能概要
+# -----------------------------------------------
+#  このワークフローは、リポジトリ作成後の初回プッシュ時に
+#  main ブランチに対して保護ルールを自動適用します。
+#
+#  主な機能：
+#  - 保護ルールは.github/protection/protection.jsonc から取得
+#  - JSONC 形式のコメントを除去して標準 JSON に変換
+#  - GitHub API を使用して main ブランチに保護ルールを自動適用
+#  - テンプレートリポジトリ（名前に 'template' を含む）では実行しない
+# ================================================
 
-name: Auto Apply Branch Protection
+name: Auto Apply Branch Protection (or Manual)
 
 on:
   workflow_dispatch: {}
@@ -12,9 +20,13 @@ on:
 
 jobs:
   protect:
-    runs-on: ubuntu-latest
-    # 初回実行時（リポジトリ作成直後）または手動実行時のみ動作
-    if: github.run_number == 1 || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest # GitHub が用意する Linux 実行環境
+
+    # リポジトリ名に 'template' が含まれず、（テンプレート除外）
+    # かつ初回実行時（または手動実行時）のみ動作
+    if: |
+      !contains(github.event.repository.name, 'template') &&
+      (github.run_number == 1 || github.event_name == 'workflow_dispatch')
 
     steps:
       - name: Checkout

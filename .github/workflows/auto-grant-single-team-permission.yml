@@ -1,4 +1,17 @@
-name: Grant Single Team Permission (Manual & Auto)
+# ================================================
+#  機能概要
+# -----------------------------------------------
+#  このワークフローは、リポジトリ名からチーム名を推測し、
+#  そのチームに対してリポジトリへのアクセス権限を付与します。
+#
+#  主な機能：
+#  - リポジトリ名（例: Prefix_TeamName）から TeamName を抽出
+#  - 指定されたチームに maintain 権限（デフォルト）を付与
+#  - 手動実行時はチーム名と権限を指定可能
+#  - テンプレートリポジトリ（名前に 'template' を含む）では実行しない
+# ================================================
+
+name: Auto Grant Single Team Permission (or Manual)
 
 on:
   # 手动执行
@@ -18,16 +31,18 @@ on:
 
 jobs:
   grant:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # GitHub が用意する Linux 実行環境
 
-    # 初回実行（run_number == 1）または手动実行时のみ
-    # → これにより「他の push では自動実行しない」
-    if: github.run_number == 1 || github.event_name == 'workflow_dispatch'
+    # リポジトリ名に 'template' が含まれず、（テンプレート除外）
+    # かつ初回実行時（または手動実行時）のみ動作
+    if: |
+      !contains(github.event.repository.name, 'template') &&
+      (github.run_number == 1 || github.event_name == 'workflow_dispatch')
 
     env:
       # repo 名から team_slug を抽出するための正規表現
-      # 例: STD001_Team01 → Team01
-      TEAM_FROM_REPO_REGEX: '^[^_]+_(.+)$'
+      # 例: STD001_team01 → team01
+      TEAM_FROM_REPO_REGEX: "^[^_]+_(.+)$"
       DEFAULT_PERMISSION: "maintain"
       GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
 
