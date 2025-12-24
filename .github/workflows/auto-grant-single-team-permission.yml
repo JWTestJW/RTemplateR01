@@ -13,6 +13,9 @@
 
 name: Auto Grant Single Team Permission (or Manual)
 
+permissions:
+  contents: read
+
 on:
   # 手动执行
   workflow_dispatch:

@@ -11,6 +11,9 @@
 
 name: Fix Executable Permissions
 
+permissions:
+  contents: write
+
 on:
   workflow_dispatch: {}
 

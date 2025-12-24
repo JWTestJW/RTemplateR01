@@ -13,6 +13,9 @@
 
 name: Auto Apply Branch Protection (or Manual)
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch: {}
   push:
